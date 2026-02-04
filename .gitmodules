@@ -1,0 +1,3 @@
+[submodule "libs/libft_tools"]
+	path = libs/libft_tools
+	url = git@github.com:Memthos/libft_tools.git
