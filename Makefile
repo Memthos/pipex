@@ -1,5 +1,5 @@
 INCLUDES=includes/
-SRCS=pipex.c
+SRCS=pipex.c pipex_tools.c
 OBJDIR=objs/
 OBJECTS=$(addprefix $(OBJDIR), $(SRCS:.c=.o))
 

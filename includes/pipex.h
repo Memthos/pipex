@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:39 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/06 15:30:36 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/06 19:35:54 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,9 @@ typedef struct s_pipex
 	int		fd_in;
 	int		fd_out;
 }	t_pipex;
+
+void	error(int code, char *msg, char *cmd, t_pipex *pipex);
+void	free_pipex(t_pipex *pipex);
+void	close_fds(t_pipex *pipex);
 
 #endif
