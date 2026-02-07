@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 19:33:57 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/06 19:35:45 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/07 20:12:22 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,11 @@ void	free_pipex(t_pipex *pipex)
 	}
 }
 
-void	error(int code, char *msg, char *cmd, t_pipex *pipex)
+void	error(int code, char *msg, t_pipex *pipex)
 {
 	if (pipex)
 		free_pipex(pipex);
-	if (msg && cmd)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(msg, 2);
-		ft_putstr_fd(" :", 2);
-		ft_putendl_fd(cmd, 2);
-	}
-	else
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putendl_fd(msg, 2);
-	}
+	ft_putstr_fd("pipex: ", 2);
+	ft_putendl_fd(msg, 2);
 	exit(code);
 }
