@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/08 12:37:29 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/08 14:34:32 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ static t_pipex	pipex_base(int argc, char **argv, char **envp)
 	t_pipex	pipex;
 	size_t	i;
 
+	pipex = (t_pipex){.env = NULL, .paths = NULL, .pipe = {-1, -1}, .fd_in = -1, .fd_out = -1, .env = envp};
 	if (ft_strcmp(argv[1], "here_doc") == 0)
-		//test
-	pipex = (t_pipex){.pipe = {-1, -1}, .fd_in = -1, .fd_out = -1, .env = envp};
+		pipex.here_doc = argv[2];
 	pipex.fd_in = open(argv[1], O_RDONLY);
 	pipex.fd_out = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	pipex.cmd_in = ft_split(argv[2], ' ');
