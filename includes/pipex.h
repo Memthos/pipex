@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:39 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/07 20:06:46 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/08 12:36:48 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-# include "../libs/libft_tools/headers/libft.h"
+# include "../libs/libft_tools/includes/libft.h"
 
 typedef struct s_pipex
 {

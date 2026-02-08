@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/07 20:16:32 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/08 12:37:29 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,7 @@ static void	execute(t_pipex *pipex, char **cmd)
 	error(127, "Command not found", pipex);
 }
 
-static void	child_02(t_pipex *pipex)
-{
-	if (pipex->fd_out == -1)
-		error(1, "no such file or directory", pipex);
-	if (!pipex->cmd_out)
-		error(1, "permission denied", pipex);
-	if (dup2(pipex->pipe[0], 0) == -1)
-		error(1, "Dup input file to standard input failed", pipex);
-	if (dup2(pipex->fd_out, 1) == -1)
-		error(1, "Dup pipe output to standard output failed", pipex);
-	close_fds(pipex);
-	if (!pipex->env)
-		error(1, "Environment variable fail", pipex);
-	execute(pipex, pipex->cmd_out);
-}
-
-static void	child_01(t_pipex *pipex)
+static void	child(t_pipex *pipex)
 {
 	if (pipex->fd_in == -1)
 		error (1, "no such file or directory", pipex);
@@ -73,11 +57,13 @@ static void	child_01(t_pipex *pipex)
 	execute(pipex, pipex->cmd_in);
 }
 
-static t_pipex	pipex_base(char **argv, char **envp)
+static t_pipex	pipex_base(int argc, char **argv, char **envp)
 {
 	t_pipex	pipex;
 	size_t	i;
 
+	if (ft_strcmp(argv[1], "here_doc") == 0)
+		//test
 	pipex = (t_pipex){.pipe = {-1, -1}, .fd_in = -1, .fd_out = -1, .env = envp};
 	pipex.fd_in = open(argv[1], O_RDONLY);
 	pipex.fd_out = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
@@ -101,25 +87,18 @@ static t_pipex	pipex_base(char **argv, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	pipex;
-	pid_t	childs[2];
+	pid_t	child_pid;
 	int		status;
 
-	if (argc != 5)
+	if (argc < 5)
 		error(2, "Wrong number of arguments", NULL);
-	pipex = pipex_base(argv, envp);
-	childs[0] = fork();
-	if (childs[0] == -1)
-		error(1, "Child 01 creation failed", &pipex);
-	if (childs[0] == 0)
-		child_01(&pipex);
-	childs[1] = fork();
-	if (childs[1] == -1)
-		error(1, "Child 02 creation failed", &pipex);
-	if (childs[1] == 0)
-		child_02(&pipex);
+	pipex = pipex_base(argc, argv, envp);
+	child_pid = fork();
+	if (child_pid == -1)
+		error(1, "Child creation failed", &pipex);
+	if (child_pid == 0)
+		child(&pipex);
 	free_pipex(&pipex);
-	waitpid(childs[0], NULL, 0);
-	waitpid(childs[1], &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (0);
