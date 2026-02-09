@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/07 20:12:10 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/09 00:51:58 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ static t_pipex	pipex_base(char **argv, char **envp)
 	t_pipex	pipex;
 	size_t	i;
 
-	pipex = (t_pipex){.pipe = {-1, -1}, .fd_in = -1, .fd_out = -1, .env = envp};
+	pipex = (t_pipex){.env = envp, .paths = NULL, .pwd = NULL, .cmd_in = NULL,
+		.cmd_out = NULL, .pipe = {-1, -1}, .fd_in = -1, .fd_out = -1};
 	pipex.fd_in = open(argv[1], O_RDONLY);
 	pipex.fd_out = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	pipex.cmd_in = ft_split(argv[2], ' ');
@@ -122,5 +123,7 @@ int	main(int argc, char **argv, char **envp)
 	waitpid(childs[1], &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (WTERMSIG(status) + 128);
 	return (0);
 }

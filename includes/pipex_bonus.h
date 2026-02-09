@@ -6,12 +6,12 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:39 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/08 14:34:32 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/02/09 00:54:25 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -27,8 +27,7 @@ typedef struct s_pipex
 	char	**env;
 	char	**paths;
 	char	*pwd;
-	char	**cmd_in;
-	char	**cmd_out;
+	char	**cmd;
 	int		pipe[2];
 	int		fd_in;
 	int		fd_out;
