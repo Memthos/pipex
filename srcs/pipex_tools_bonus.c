@@ -1,0 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_tools_bonus.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/06 19:33:57 by mperrine          #+#    #+#             */
+/*   Updated: 2026/03/03 16:21:30 by mperrine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/pipex_bonus.h"
+
+void	close_fds(t_pipex *pipex)
+{
+	if (pipex->fd_in != -1)
+	{
+		close(pipex->fd_in);
+		pipex->fd_in = -1;
+	}
+	if (pipex->fd_out != -1)
+	{
+		close(pipex->fd_out);
+		pipex->fd_out = -1;
+	}
+	// if (pipex->pipe[0] != -1)
+	// {
+	// 	close(pipex->pipe[0]);
+	// 	pipex->pipe[0] = -1;
+	// }
+	// if (pipex->pipe[1] != -1)
+	// {
+	// 	close(pipex->pipe[1]);
+	// 	pipex->pipe[1] = -1;
+	// }
+}
+
+void	free_pipex(t_pipex *pipex)
+{
+	size_t	i;
+
+	close_fds(pipex);
+	if (pipex->paths)
+	{
+		i = 0;
+		while (pipex->paths[i++])
+			free(pipex->paths[i - 1]);
+		free(pipex->paths);
+	}
+	// if (pipex->cmd_in)
+	// {
+	// 	i = 0;
+	// 	while (pipex->cmd_in[i++])
+	// 		free(pipex->cmd_in[i - 1]);
+	// 	free(pipex->cmd_in);
+	// }
+}
+
+void	error(int code, char *msg, t_pipex *pipex)
+{
+	if (pipex)
+		free_pipex(pipex);
+	ft_putstr_fd("pipex: ", 2);
+	ft_putendl_fd(msg, 2);
+	exit(code);
+}
