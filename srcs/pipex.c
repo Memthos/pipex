@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/09 00:51:58 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/03 16:00:30 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ static void	execute(t_pipex *pipex, char **cmd)
 	size_t	i;
 
 	tmp = NULL;
-	if (cmd[0][0] == '.')
-		tmp = ft_strjoin(pipex->pwd, &cmd[0][1]);
-	else if (access(cmd[0], F_OK | X_OK) == -1)
+	if (access(cmd[0], F_OK | X_OK) == -1)
 	{
 		i = 0;
 		while (pipex->paths[i])
@@ -78,8 +76,7 @@ static t_pipex	pipex_base(char **argv, char **envp)
 	t_pipex	pipex;
 	size_t	i;
 
-	pipex = (t_pipex){.env = envp, .paths = NULL, .pwd = NULL, .cmd_in = NULL,
-		.cmd_out = NULL, .pipe = {-1, -1}, .fd_in = -1, .fd_out = -1};
+	pipex = (t_pipex){envp, NULL, NULL, NULL, {-1, -1}, -1, -1};
 	pipex.fd_in = open(argv[1], O_RDONLY);
 	pipex.fd_out = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	pipex.cmd_in = ft_split(argv[2], ' ');
@@ -89,11 +86,6 @@ static t_pipex	pipex_base(char **argv, char **envp)
 		i++;
 	if (envp[i])
 		pipex.paths = ft_split(envp[i] + 5, ':');
-	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PWD=", 4))
-		i++;
-	if (envp[i])
-		pipex.pwd = envp[i] + 4;
 	if (pipe(pipex.pipe) == -1)
 		error(1, "Pipe failed to create", &pipex);
 	return (pipex);

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:39 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/08 12:36:48 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/03 15:57:29 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ typedef struct s_pipex
 {
 	char	**env;
 	char	**paths;
-	char	*pwd;
 	char	**cmd_in;
 	char	**cmd_out;
 	int		pipe[2];
