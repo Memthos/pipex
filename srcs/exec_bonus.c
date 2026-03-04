@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:27:44 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/04 17:16:33 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:34:27 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,24 @@ static void	child(t_pipex *pipex, size_t idx, int fd_in, int fd_out)
 	execute(pipex, pipex->cmds[idx]);
 }
 
+static int	reset_pipe(int (*pipe_fds)[2])
+{
+	int	ret;
+
+	ret = 0;
+	close_fd(&(*pipe_fds)[0]);
+	close_fd(&(*pipe_fds)[1]);
+	ret = pipe(*pipe_fds);
+	return (ret);
+}
+
 static int	cmds_loop(t_pipex *pipex)
 {
 	while (pipex->cur_cmd < pipex->nb_cmds - 1)
 	{
 		if (pipex->cur_cmd % 2)
 		{
-			if (reset_pipe(&pipex->pipe_02) == -1)
+			if (reset_pipe(&pipex->pip_2) == -1)
 				return (1);
 		}
 		pipex->pids[pipex->cur_cmd] = fork();
@@ -68,13 +79,13 @@ static int	cmds_loop(t_pipex *pipex)
 		if (pipex->pids[pipex->cur_cmd] == 0)
 		{
 			if (pipex->cur_cmd % 2)
-				child(pipex, pipex->cur_cmd, pipex->pipe_01[0], pipex->pipe_02[1]);
+				child(pipex, pipex->cur_cmd, pipex->pip_1[0], pipex->pip_2[1]);
 			else
-				child(pipex, pipex->cur_cmd, pipex->pipe_02[0], pipex->pipe_01[1]);
+				child(pipex, pipex->cur_cmd, pipex->pip_2[0], pipex->pip_1[1]);
 		}
 		if (pipex->cur_cmd % 2)
 		{
-			if (reset_pipe(&pipex->pipe_01) == -1)
+			if (reset_pipe(&pipex->pip_1) == -1)
 				return (1);
 		}
 		pipex->cur_cmd++;
@@ -88,12 +99,12 @@ int	exec_cmds(t_pipex *pipex)
 	if (pipex->pids[0] == -1)
 		error(1, "Child 02 creation failed", pipex);
 	if (pipex->pids[0] == 0)
-		child(pipex, 0, pipex->fd_in, pipex->pipe_01[1]);
+		child(pipex, 0, pipex->fd_in, pipex->pip_1[1]);
 	pipex->cur_cmd++;
 	if (cmds_loop(pipex))
 		return (1);
 	if (pipex->cur_cmd % 2)
-		if (reset_pipe(&pipex->pipe_02) == -1)
+		if (reset_pipe(&pipex->pip_2) == -1)
 			return (1);
 	pipex->pids[pipex->cur_cmd] = fork();
 	if (pipex->pids[pipex->cur_cmd] == -1)
@@ -101,9 +112,9 @@ int	exec_cmds(t_pipex *pipex)
 	if (pipex->pids[pipex->cur_cmd] == 0)
 	{
 		if (pipex->cur_cmd % 2)
-			child(pipex, pipex->cur_cmd, pipex->pipe_01[0], pipex->fd_out);
+			child(pipex, pipex->cur_cmd, pipex->pip_1[0], pipex->fd_out);
 		else
-			child(pipex, pipex->cur_cmd, pipex->pipe_02[0], pipex->fd_out);
+			child(pipex, pipex->cur_cmd, pipex->pip_2[0], pipex->fd_out);
 	}
 	pipex->cur_cmd++;
 	return (0);

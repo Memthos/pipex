@@ -6,62 +6,47 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 19:33:57 by mperrine          #+#    #+#             */
-/*   Updated: 2026/02/07 20:12:22 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/04 19:20:44 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
+static void	close_fd(int *fd)
+{
+	if (*fd == -1)
+		return ;
+	close(*fd);
+	*fd = -1;
+}
+
 void	close_fds(t_pipex *pipex)
 {
-	if (pipex->fd_in != -1)
+	close_fd(&pipex->fd_in);
+	close_fd(&pipex->fd_out);
+	close_fd(&pipex->pipe[0]);
+	close_fd(&pipex->pipe[1]);
+}
+
+static void	free_tab(char **tab)
+{
+	size_t	i;
+
+	i = 0;
+	if (tab)
 	{
-		close(pipex->fd_in);
-		pipex->fd_in = -1;
-	}
-	if (pipex->fd_out != -1)
-	{
-		close(pipex->fd_out);
-		pipex->fd_out = -1;
-	}
-	if (pipex->pipe[0] != -1)
-	{
-		close(pipex->pipe[0]);
-		pipex->pipe[0] = -1;
-	}
-	if (pipex->pipe[1] != -1)
-	{
-		close(pipex->pipe[1]);
-		pipex->pipe[1] = -1;
+		while (tab[i])
+			free(tab[i++]);
+		free(tab);
 	}
 }
 
 void	free_pipex(t_pipex *pipex)
 {
-	size_t	i;
-
 	close_fds(pipex);
-	if (pipex->paths)
-	{
-		i = 0;
-		while (pipex->paths[i++])
-			free(pipex->paths[i - 1]);
-		free(pipex->paths);
-	}
-	if (pipex->cmd_in)
-	{
-		i = 0;
-		while (pipex->cmd_in[i++])
-			free(pipex->cmd_in[i - 1]);
-		free(pipex->cmd_in);
-	}
-	if (pipex->cmd_out)
-	{
-		i = 0;
-		while (pipex->cmd_out[i++])
-			free(pipex->cmd_out[i - 1]);
-		free(pipex->cmd_out);
-	}
+	free_tab(pipex->paths);
+	free_tab(pipex->cmd_in);
+	free_tab(pipex->cmd_out);
 }
 
 void	error(int code, char *msg, t_pipex *pipex)
