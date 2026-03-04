@@ -6,12 +6,12 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:39 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/03 16:19:36 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/04 17:51:11 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -23,18 +23,24 @@
 
 typedef struct s_pipex
 {
-	char	*here_doc;
+	char	*limiter;
 	char	**env;
 	char	**paths;
 	char	***cmds;
+	pid_t	*pids;
+	size_t	nb_cmds;
+	size_t	cur_cmd;
 	int		pipe_01[2];
 	int		pipe_02[2];
 	int		fd_in;
 	int		fd_out;
 }	t_pipex;
 
+int		exec_cmds(t_pipex *pipex);
 void	error(int code, char *msg, t_pipex *pipex);
 void	free_pipex(t_pipex *pipex);
 void	close_fds(t_pipex *pipex);
+void	close_fd(int *fd);
+int		reset_pipe(int (*pipe_fds)[2]);
 
 #endif

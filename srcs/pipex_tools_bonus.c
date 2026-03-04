@@ -6,34 +6,52 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 19:33:57 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/03 16:21:30 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/04 18:39:44 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
+int	reset_pipe(int (*pipe_fds)[2])
+{
+	int	ret;
+
+	ret = 0;
+	close_fd(&(*pipe_fds)[0]);
+	close_fd(&(*pipe_fds)[1]);
+	ret = pipe(*pipe_fds);
+	return (ret);
+}
+
+void	close_fd(int *fd)
+{
+	if (*fd == -1)
+		return ;
+	close(*fd);
+	*fd = -1;
+}
+
 void	close_fds(t_pipex *pipex)
 {
-	if (pipex->fd_in != -1)
+	close_fd(&pipex->fd_in);
+	close_fd(&pipex->fd_out);
+	close_fd(&pipex->pipe_01[0]);
+	close_fd(&pipex->pipe_01[1]);
+	close_fd(&pipex->pipe_02[0]);
+	close_fd(&pipex->pipe_02[1]);
+}
+
+static void	free_tab(char **tab)
+{
+	size_t	i;
+
+	i = 0;
+	if (tab)
 	{
-		close(pipex->fd_in);
-		pipex->fd_in = -1;
+		while (tab[i])
+			free(tab[i++]);
+		free(tab);
 	}
-	if (pipex->fd_out != -1)
-	{
-		close(pipex->fd_out);
-		pipex->fd_out = -1;
-	}
-	// if (pipex->pipe[0] != -1)
-	// {
-	// 	close(pipex->pipe[0]);
-	// 	pipex->pipe[0] = -1;
-	// }
-	// if (pipex->pipe[1] != -1)
-	// {
-	// 	close(pipex->pipe[1]);
-	// 	pipex->pipe[1] = -1;
-	// }
 }
 
 void	free_pipex(t_pipex *pipex)
@@ -41,20 +59,18 @@ void	free_pipex(t_pipex *pipex)
 	size_t	i;
 
 	close_fds(pipex);
-	if (pipex->paths)
+	free_tab(pipex->paths);
+	i = 0;
+	if (pipex->cmds)
 	{
-		i = 0;
-		while (pipex->paths[i++])
-			free(pipex->paths[i - 1]);
-		free(pipex->paths);
+		while (i < pipex->nb_cmds)
+			free_tab(pipex->cmds[i++]);
+		free(pipex->cmds);
 	}
-	// if (pipex->cmd_in)
-	// {
-	// 	i = 0;
-	// 	while (pipex->cmd_in[i++])
-	// 		free(pipex->cmd_in[i - 1]);
-	// 	free(pipex->cmd_in);
-	// }
+	if (pipex->pids)
+		free(pipex->pids);
+	if (pipex->limiter)
+		free(pipex->limiter);
 }
 
 void	error(int code, char *msg, t_pipex *pipex)

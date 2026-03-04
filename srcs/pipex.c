@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/03 16:00:30 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/04 10:24:00 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ static void	child_02(t_pipex *pipex)
 	if (dup2(pipex->fd_out, 1) == -1)
 		error(1, "Dup pipe output to standard output failed", pipex);
 	close_fds(pipex);
-	if (!pipex->env)
-		error(1, "Environment variable fail", pipex);
 	execute(pipex, pipex->cmd_out);
 }
 
@@ -66,8 +64,6 @@ static void	child_01(t_pipex *pipex)
 	if (dup2(pipex->pipe[1], 1) == -1)
 		error(1, "Dup pipe output to standard output failed", pipex);
 	close_fds(pipex);
-	if (!pipex->env)
-		error(1, "Environment variable fail", pipex);
 	execute(pipex, pipex->cmd_in);
 }
 

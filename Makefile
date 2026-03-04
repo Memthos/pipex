@@ -1,6 +1,6 @@
 INCLUDES=includes/
 SRCS=pipex.c pipex_tools.c
-SRCS_BONUS=pipex_bonus.c pipex_tools_bonus.c
+SRCS_BONUS=pipex_bonus.c pipex_tools_bonus.c exec_bonus.c
 OBJDIR=objs/
 OBJECTS=$(addprefix $(OBJDIR), $(SRCS:.c=.o))
 OBJECTS_BONUS=$(addprefix $(OBJDIR), $(SRCS_BONUS:.c=.o))
@@ -16,13 +16,13 @@ BONUS=pipex_bonus
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS) $(LIBFT)
+$(NAME): $(OBJECTS_BONUS) $(LIBFT)
 	@$(CC) $(CFLAGS) -o $@ $^ -I$(INCLUDES)
 	@echo "Finished compiling Pipex"
 
 bonus: $(OBJECTS_BONUS) $(LIBFT)
 	@$(CC) $(CFLAGS) -o $(BONUS) $^ -I$(INCLUDES)
-	@echo "Finished compiling Pipex bonus"
+	@echo "Finished compiling Pipex bonuses"
 
 $(OBJDIR)%.o: %.c | $(OBJDIR)
 	@$(CC) $(CFLAGS) -o $@ -c $<
