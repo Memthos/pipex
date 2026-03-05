@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:27:44 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/04 19:34:27 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/05 08:56:58 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static void	execute(t_pipex *pipex, char **cmd)
 		while (pipex->paths[i])
 		{
 			tmp = ft_strjoin_sep(pipex->paths[i++], cmd[0], '/');
+			if (!tmp)
+				error(1, "Malloc error", pipex);
 			if (access(tmp, F_OK | X_OK) == 0)
 				break ;
 			free(tmp);
@@ -43,7 +45,7 @@ static void	child(t_pipex *pipex, size_t idx, int fd_in, int fd_out)
 {
 	if (fd_in == -1 || fd_out == -1)
 		error (1, "no such file or directory", pipex);
-	if (!pipex->cmds[idx])
+	if (!pipex->cmds[idx] || !pipex->cmds[idx][0])
 		error(1, "permission denied", pipex);
 	if (dup2(fd_out, 1) == -1)
 		error(1, "Dup failed", pipex);

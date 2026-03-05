@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 14:58:37 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/04 10:24:00 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/05 08:56:59 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static void	execute(t_pipex *pipex, char **cmd)
 		while (pipex->paths[i])
 		{
 			tmp = ft_strjoin_sep(pipex->paths[i++], cmd[0], '/');
+			if (!tmp)
+				error(1, "Malloc error", pipex);
 			if (access(tmp, F_OK | X_OK) == 0)
 				break ;
 			free(tmp);
@@ -43,7 +45,7 @@ static void	child_02(t_pipex *pipex)
 {
 	if (pipex->fd_out == -1)
 		error(1, "no such file or directory", pipex);
-	if (!pipex->cmd_out)
+	if (!pipex->cmd_out || !pipex->cmd_out[0])
 		error(1, "permission denied", pipex);
 	if (dup2(pipex->pipe[0], 0) == -1)
 		error(1, "Dup input file to standard input failed", pipex);
@@ -57,7 +59,7 @@ static void	child_01(t_pipex *pipex)
 {
 	if (pipex->fd_in == -1)
 		error (1, "no such file or directory", pipex);
-	if (!pipex->cmd_in)
+	if (!pipex->cmd_in || !pipex->cmd_in[0])
 		error(1, "permission denied", pipex);
 	if (dup2(pipex->fd_in, 0) == -1)
 		error(1, "Dup input file to standard input failed", pipex);
