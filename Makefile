@@ -20,7 +20,9 @@ $(NAME): $(OBJECTS) $(LIBFT)
 	@$(CC) $(CFLAGS) -o $@ $^ -I$(INCLUDES)
 	@echo "Finished compiling Pipex"
 
-bonus: $(OBJECTS_BONUS) $(LIBFT)
+bonus: $(BONUS)
+
+$(BONUS): $(OBJECTS_BONUS) $(LIBFT)
 	@$(CC) $(CFLAGS) -o $(BONUS) $^ -I$(INCLUDES)
 	@echo "Finished compiling Pipex bonuses"
 
